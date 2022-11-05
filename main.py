@@ -9,7 +9,7 @@ portfolio.tokens.append(t.Token("Litecoin", 10, 400))
 
 marketData = cgapi.get_market(list(t.name for t in portfolio.tokens))
 viewModel = list(
-    zip(sorted(portfolio.tokens, key=lambda x: x.name, reverse=False), marketData))
+    zip(portfolio.get_tokens(), marketData))
 
 pycrypto = Tk()
 pycrypto.title("My Crypto Portfolio")
