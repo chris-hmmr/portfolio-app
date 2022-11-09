@@ -20,8 +20,20 @@ def calculate_value(amount, value):
     return format_price(amount * value)
 
 
+def calculate_profit_loss_per_coin(currentValue, amountPaid):
+    return currentValue - amountPaid
+
+
+def calculate_profit_loss_totals(current_profit_loss, amount_of_coins):
+    return current_profit_loss * amount_of_coins
+
+
 def format_price(value):
     return "{:.2f}".format(value)
+
+
+def paid_price_per_coin(amount_paid, amount_of_coins):
+    return amount_paid / amount_of_coins
 
 
 def format_currency(value, currencySymbol):
@@ -45,7 +57,7 @@ def draw_header(gui):
                  font="Lato 12 bold", padx="5", pady="5", borderwidth=2, relief="groove")
     name.grid(row=0, column=3, sticky=N+S+E+W)
 
-    name = Label(gui, text="Current Value", bg="#142E54", fg="white",
+    name = Label(gui, text="Current Total Value", bg="#142E54", fg="white",
                  font="Lato 12 bold", padx="5", pady="5", borderwidth=2, relief="groove")
     name.grid(row=0, column=4, sticky=N+S+E+W)
 
@@ -82,11 +94,11 @@ def draw_portfolio(gui, portfolio):
                               padx="2", pady="2", borderwidth=2, relief="groove")
         current_value.grid(row=coin_row, column=4, sticky=N+S+E+W)
 
-        profit_loss_per_coin = Label(gui, text="0", bg="#F3F4F6", fg="black",
+        profit_loss_per_coin = Label(gui, text=format_price(calculate_profit_loss_per_coin(market.current_price, paid_price_per_coin(token.amount_paid, token.amount_owned))), bg="#F3F4F6", fg="black",
                                      font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
         profit_loss_per_coin.grid(row=coin_row, column=5, sticky=N+S+E+W)
 
-        total_profit_loss_with_coin = Label(gui, text="0", bg="#F3F4F6", fg="black",
+        total_profit_loss_with_coin = Label(gui, text=format_price(calculate_profit_loss_totals(calculate_profit_loss_per_coin(market.current_price, paid_price_per_coin(token.amount_paid, token.amount_owned)), token.amount_owned)), bg="#F3F4F6", fg="black",
                                             font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
         total_profit_loss_with_coin.grid(
             row=coin_row, column=6, sticky=N+S+E+W)
