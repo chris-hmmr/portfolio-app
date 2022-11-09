@@ -37,7 +37,7 @@ def paid_price_per_coin(amount_paid, amount_of_coins):
 
 
 def format_currency(value, currencySymbol):
-    return f"{value}{currencySymbol}"
+    return f"{currencySymbol}{value}"
 
 
 def print_profit_loss(value):
@@ -79,13 +79,14 @@ def draw_header(gui):
 
 def draw_portfolio(gui, portfolio):
     coin_row = 1
+    total_profit = 0
 
     for token, market in portfolio:
         symbol = Label(gui, text=market.symbol, bg="#F3F4F6", fg="black",
                        font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
         symbol.grid(row=coin_row, column=0, sticky=N+S+E+W)
 
-        lbl_current_price = Label(gui, text=format_price(market.current_price),
+        lbl_current_price = Label(gui, text=format_currency(format_price(market.current_price), "$"),
                                   bg="#F3F4F6", fg="black", font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
         lbl_current_price.grid(row=coin_row, column=1, sticky=N+S+E+W)
 
@@ -93,27 +94,32 @@ def draw_portfolio(gui, portfolio):
                                  padx="2", pady="2", borderwidth=2, relief="groove")
         lbl_amount_owned.grid(row=coin_row, column=2, sticky=N+S+E+W)
 
-        lbl_amount_paid = Label(gui, text=format_currency(token.amount_paid, "€"),
+        lbl_amount_paid = Label(gui, text=format_currency(token.amount_paid, "$"),
                                 bg="#F3F4F6", fg="black", font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
         lbl_amount_paid.grid(row=coin_row, column=3, sticky=N+S+E+W)
 
-        lbl_current_value = Label(gui, text=calculate_value(token.amount_owned, market.current_price), bg="#F3F4F6", fg="black", font="Lato 12 bold",
+        lbl_current_value = Label(gui, text=format_currency(calculate_value(token.amount_owned, market.current_price), "$"), bg="#F3F4F6", fg="black", font="Lato 12 bold",
                                   padx="2", pady="2", borderwidth=2, relief="groove")
         lbl_current_value.grid(row=coin_row, column=4, sticky=N+S+E+W)
 
         profit_loss_per_coin = calculate_profit_loss_per_coin(
             market.current_price, paid_price_per_coin(token.amount_paid, token.amount_owned))
-        lbl_profit_loss_per_coin = Label(gui, text=format_price(profit_loss_per_coin), bg="#F3F4F6", fg=print_profit_loss(profit_loss_per_coin),
+        lbl_profit_loss_per_coin = Label(gui, text=format_currency(format_price(profit_loss_per_coin), "$"), bg="#F3F4F6", fg=print_profit_loss(profit_loss_per_coin),
                                          font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
         lbl_profit_loss_per_coin.grid(row=coin_row, column=5, sticky=N+S+E+W)
 
         total_profit_loss_with_coin = calculate_profit_loss_totals(calculate_profit_loss_per_coin(
             market.current_price, paid_price_per_coin(token.amount_paid, token.amount_owned)), token.amount_owned)
-        lbl_total_profit_loss_with_coin = Label(gui, text=format_price(total_profit_loss_with_coin), bg="#F3F4F6", fg=print_profit_loss(total_profit_loss_with_coin),
+        lbl_total_profit_loss_with_coin = Label(gui, text=format_currency(format_price(total_profit_loss_with_coin), "$"), bg="#F3F4F6", fg=print_profit_loss(total_profit_loss_with_coin),
                                                 font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
         lbl_total_profit_loss_with_coin.grid(
             row=coin_row, column=6, sticky=N+S+E+W)
         coin_row = coin_row + 1
+        total_profit = total_profit + total_profit_loss_with_coin
+
+    lbl_total_profits = Label(gui, text=format_currency(format_price(total_profit), "$"), bg="#F3F4F6", fg=print_profit_loss(total_profit),
+                              font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
+    lbl_total_profits.grid(row=coin_row, column=6, sticky=N+S+E+W)
 
 
 draw_header(pycrypto)
