@@ -79,7 +79,8 @@ def draw_header(gui):
 
 def draw_portfolio(gui, portfolio):
     coin_row = 1
-    total_profit = 0
+    total_pl = 0
+    total_pl_per_coin = 0
 
     for token, market in portfolio:
         symbol = Label(gui, text=market.symbol, bg="#F3F4F6", fg="black",
@@ -115,9 +116,18 @@ def draw_portfolio(gui, portfolio):
         lbl_total_profit_loss_with_coin.grid(
             row=coin_row, column=6, sticky=N+S+E+W)
         coin_row = coin_row + 1
-        total_profit = total_profit + total_profit_loss_with_coin
+        total_pl = total_pl + total_profit_loss_with_coin
+        total_pl_per_coin = total_pl_per_coin + profit_loss_per_coin
 
-    lbl_total_profits = Label(gui, text=format_currency(format_price(total_profit), "$"), bg="#F3F4F6", fg=print_profit_loss(total_profit),
+    lbl_totals = Label(gui, text="Totals: ", bg="#F3F4F6", fg="black",
+                       font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
+    lbl_totals.grid(row=coin_row, column=0, columnspan=5, sticky=N+S+E+W)
+
+    lbl_total_profits = Label(gui, text=format_currency(format_price(total_pl_per_coin), "$"), bg="#F3F4F6", fg=print_profit_loss(total_pl),
+                              font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
+    lbl_total_profits.grid(row=coin_row, column=5, sticky=N+S+E+W)
+
+    lbl_total_profits = Label(gui, text=format_currency(format_price(total_pl), "$"), bg="#F3F4F6", fg=print_profit_loss(total_pl),
                               font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
     lbl_total_profits.grid(row=coin_row, column=6, sticky=N+S+E+W)
 
