@@ -14,7 +14,6 @@ def create_app(pycrypto):
         zip(portfolio.get_tokens_sorted(), marketData))
     draw_header(pycrypto)
     draw_portfolio(pycrypto, viewModel)
-    pycrypto.mainloop()
 
 
 def calculate_value(amount, value):
@@ -150,3 +149,5 @@ pycrypto.title("My Crypto Portfolio")
 pycrypto.iconbitmap('favicon.ico')
 
 create_app(pycrypto)
+
+pycrypto.mainloop()
