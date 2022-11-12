@@ -3,6 +3,20 @@ from tkinter import *
 from models import portfolio as p, token as t
 
 
+def create_app(pycrypto):
+    portfolio = p.Portfolio()
+    portfolio.tokens.append(t.Token("Ethereum", 13, 5500))
+    portfolio.tokens.append(t.Token("Bitcoin", 2, 16000))
+    portfolio.tokens.append(t.Token("Litecoin", 10, 600))
+
+    marketData = cgapi.get_market(list(t.name for t in portfolio.tokens))
+    viewModel = list(
+        zip(portfolio.get_tokens_sorted(), marketData))
+    draw_header(pycrypto)
+    draw_portfolio(pycrypto, viewModel)
+    pycrypto.mainloop()
+
+
 def calculate_value(amount, value):
     return amount * value
 
@@ -32,6 +46,10 @@ def print_profit_loss(value):
         return "green"
 
     return "red"
+
+
+def redraw_portfolio(pycrypto):
+    create_app(pycrypto)
 
 
 def draw_header(gui):
@@ -108,6 +126,8 @@ def draw_portfolio(gui, portfolio):
         total_pl = total_pl + total_profit_loss_with_coin
         total_current_value = total_current_value + current_value
 
+    portfolio = ""
+
     lbl_totals = Label(gui, text="Totals: ", bg="#F3F4F6", fg="black",
                        font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
     lbl_totals.grid(row=coin_row, column=0, columnspan=4, sticky=N+S+E+W)
@@ -120,7 +140,8 @@ def draw_portfolio(gui, portfolio):
                               font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
     lbl_total_profits.grid(row=coin_row, column=6, sticky=N+S+E+W)
 
-    update_btn = Button(gui, text="Update", bg="#142E54", fg="white", command="", font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
+    update_btn = Button(gui, text="Update", bg="#142E54", fg="white", command=lambda: redraw_portfolio(gui),
+                        font="Lato 12 bold", padx="2", pady="2", borderwidth=2, relief="groove")
     update_btn.grid(row=coin_row + 1, column=6, sticky=N+S+E+W)
 
 
@@ -128,15 +149,4 @@ pycrypto = Tk()
 pycrypto.title("My Crypto Portfolio")
 pycrypto.iconbitmap('favicon.ico')
 
-portfolio = p.Portfolio()
-portfolio.tokens.append(t.Token("Ethereum", 13, 5500))
-portfolio.tokens.append(t.Token("Bitcoin", 2, 16000))
-portfolio.tokens.append(t.Token("Litecoin", 10, 600))
-
-marketData = cgapi.get_market(list(t.name for t in portfolio.tokens))
-viewModel = list(
-    zip(portfolio.get_tokens_sorted(), marketData))
-
-draw_header(pycrypto)
-draw_portfolio(pycrypto, viewModel)
-pycrypto.mainloop()
+create_app(pycrypto)
